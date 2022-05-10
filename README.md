@@ -27,6 +27,12 @@ You should create a configuration file (appsettings.json) with the following inf
   "AllowedHosts": "*"
 }
 ````
+* In some cases you will need to config you database connection data in `appsettings.Development.json` file
+
+## Exporting Global Variables
+`export PATH=$PATH:/home/{system-username}/.dotnet` <br>
+`export PATH=$PATH:/home/{system-username}/.dotnet/tools`
+
 ## Running migrations
 `dotnet tool install --global dotnet-ef` <br>
 `dotnet ef database update`
