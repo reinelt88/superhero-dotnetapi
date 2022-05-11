@@ -30,7 +30,6 @@ namespace SuperHeroAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> Get()
         {
-            // return await Task.FromResult(heroes);
             return await _context.SuperHeroes.ToListAsync();
         }
 
@@ -38,9 +37,6 @@ namespace SuperHeroAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<SuperHero>> Post(SuperHero hero)
         {
-            // heroes.Add(hero);
-            // return await Task.FromResult(hero);
-            // verify if the universe exists
             var universe = await _context.Universes.FindAsync(hero.UniverseId);
             if (universe == null)
             {
@@ -55,8 +51,7 @@ namespace SuperHeroAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SuperHero>> Get(int id)
         {
-            // var hero = heroes.Find(h => h.Id == id);
-            var hero = await _context.SuperHeroes.FindAsync(id);
+            var hero = await _context.SuperHeroes.Include(h => h.Universe).FirstOrDefaultAsync(h => h.Id == id);
             if (hero == null)
             {
                 return NotFound();
@@ -68,15 +63,6 @@ namespace SuperHeroAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<SuperHero>> Put(int id, SuperHero hero)
         {
-            // var existingHero = heroes.Find(h => h.Id == id);
-            // if (existingHero != null)
-            // {
-            //     existingHero.Name = hero.Name;
-            //     existingHero.FirstName = hero.FirstName;
-            //     existingHero.LastName = hero.LastName;
-            //     existingHero.Place = hero.Place;
-            //     return await Task.FromResult(existingHero);
-            // }
             var existingHero = await _context.SuperHeroes.FindAsync(id);
             if (existingHero != null)
             {
@@ -103,30 +89,14 @@ namespace SuperHeroAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<SuperHero>> Delete(int id)
         {
-            // var hero = heroes.Find(h => h.Id == id);
             var hero = await _context.SuperHeroes.FindAsync(id);
             if (hero == null)
             {
                 return NotFound();
             }
-            // heroes.Remove(hero);
-            // return await Task.FromResult(hero);
             _context.SuperHeroes.Remove(hero);
             await _context.SaveChangesAsync();
             return hero;
-        }
-
-        // Get a list of heroes by name
-        [HttpGet("{name}")]
-        public async Task<ActionResult<List<SuperHero>>> Get(string name)
-        {
-            // var heros = heroes.FindAll(h => h.Name.Contains(name));
-            var heros = await _context.SuperHeroes.Where(h => h.Name.Contains(name)).ToListAsync();
-            if (heros.Count == 0)
-            {
-                return NotFound();
-            }
-            return await Task.FromResult(heros);
         }
     }
 }

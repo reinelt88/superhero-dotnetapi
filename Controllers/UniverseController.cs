@@ -23,7 +23,7 @@ namespace SuperHeroAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Universe>>> Get()
         {
-            return await _context.Universes.ToListAsync();
+            return await _context.Universes.Include(u => u.SuperHeroes).ToListAsync();
         }
 
         //get a single universe by id
