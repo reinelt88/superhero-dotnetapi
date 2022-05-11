@@ -4,6 +4,6 @@ namespace SuperHeroAPI.Entity
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<SuperHero> SuperHeroes { get; set; }
+        public List<SuperHero> SuperHeroes { get; set; } = new List<SuperHero>();
     }
 }

@@ -40,6 +40,12 @@ namespace SuperHeroAPI.Controllers
         {
             // heroes.Add(hero);
             // return await Task.FromResult(hero);
+            // verify if the universe exists
+            var universe = await _context.Universes.FindAsync(hero.UniverseId);
+            if (universe == null)
+            {
+                return NotFound($"Universe {hero.UniverseId} does not exist");
+            }
             _context.SuperHeroes.Add(hero);
             await _context.SaveChangesAsync();
             return hero;
@@ -74,6 +80,12 @@ namespace SuperHeroAPI.Controllers
             var existingHero = await _context.SuperHeroes.FindAsync(id);
             if (existingHero != null)
             {
+                // verify if the universe exists
+                var universe = await _context.Universes.FindAsync(hero.UniverseId);
+                if (universe == null)
+                {
+                    return NotFound($"Universe {hero.UniverseId} does not exist");
+                }
                 existingHero.Name = hero.Name;
                 existingHero.FirstName = hero.FirstName;
                 existingHero.LastName = hero.LastName;
