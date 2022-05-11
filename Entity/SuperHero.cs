@@ -1,4 +1,4 @@
-namespace SuperHeroAPI
+namespace SuperHeroAPI.Entity
 {
     public class SuperHero
     {
@@ -7,5 +7,7 @@ namespace SuperHeroAPI
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Place { get; set; } = string.Empty;
+        public int UniverseId { get; set; }
+        public Universe Universe { get; set; }
     }
 }

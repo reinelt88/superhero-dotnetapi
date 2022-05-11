@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SuperHeroAPI.Data;
+using SuperHeroAPI.Entity;
 
 namespace SuperHeroAPI.Controllers
 {

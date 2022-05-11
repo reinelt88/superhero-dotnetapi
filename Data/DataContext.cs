@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SuperHeroAPI.Entity;
 
 namespace SuperHeroAPI.Data
 {
@@ -18,6 +19,7 @@ namespace SuperHeroAPI.Data
         }            
 
         public DbSet<SuperHero> SuperHeroes { get; set; }
+        public DbSet<Universe> Universes { get; set; }
         
     }
 }
