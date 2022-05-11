@@ -1,9 +1,5 @@
-using System;
-using System.Threading;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SuperHeroAPI.Data;
 using SuperHeroAPI.Entity;
 
 namespace SuperHeroAPI.Controllers
@@ -27,8 +23,8 @@ namespace SuperHeroAPI.Controllers
         }
 
         //get a single universe by id
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Universe>> Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Universe>> Get([FromRoute] int id)
         {
             var universe = await _context.Universes.FindAsync(id);
             if (universe == null)
@@ -49,7 +45,7 @@ namespace SuperHeroAPI.Controllers
 
         //update a universe
         [HttpPut("{id}")]
-        public async Task<ActionResult<Universe>> Put(int id, Universe universe)
+        public async Task<ActionResult<Universe>> Put([FromRoute] int id, [FromBody] Universe universe)
         {
             if (id != universe.Id)
             {
@@ -61,8 +57,8 @@ namespace SuperHeroAPI.Controllers
         }
 
         //delete a universe
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Universe>> Delete(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Universe>> Delete([FromRoute] int id)
         {
             var universe = await _context.Universes.FindAsync(id);
             if (universe == null)
@@ -72,6 +68,13 @@ namespace SuperHeroAPI.Controllers
             _context.Universes.Remove(universe);
             await _context.SaveChangesAsync();
             return universe;
+        }
+        
+        //get all universes by name
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<List<Universe>>> GetByName([FromRoute] string name)
+        {
+            return await _context.Universes.Where(u => u.Name.Contains(name)).ToListAsync();
         }
     }
 }
