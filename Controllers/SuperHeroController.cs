@@ -22,15 +22,18 @@ namespace SuperHeroAPI.Controllers
         };
 
         private readonly DataContext _context;
+        private readonly ILogger<SuperHeroController> _logger;
 
-        public SuperHeroController(DataContext context)
+        public SuperHeroController(DataContext context, ILogger<SuperHeroController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> Get()
         {
+            _logger.LogInformation("Get all heroes");
             return await _context.SuperHeroes.ToListAsync();
         }
 
@@ -113,7 +116,7 @@ namespace SuperHeroAPI.Controllers
         public async Task<ActionResult<List<SuperHero>>> GetByUniverse([FromRoute] int id)
         {
             var heroes = await _context.SuperHeroes.Where(h => h.UniverseId == id).ToListAsync();
-            // retun not found if heroes is empty
+            // return not found if heroes is empty
             if (heroes.Count == 0)
             {
                 return NotFound();
