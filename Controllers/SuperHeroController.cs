@@ -43,6 +43,14 @@ namespace SuperHeroAPI.Controllers
             {
                 return NotFound($"Universe {hero.UniverseId} does not exist");
             }
+            
+            //verify if exits a hero with the same name
+            var existingHero = await _context.SuperHeroes.FirstOrDefaultAsync(h => h.Name == hero.Name);
+            if (existingHero != null)
+            {
+                return BadRequest($"Hero {hero.Name} already exists");
+            }
+
             _context.SuperHeroes.Add(hero);
             await _context.SaveChangesAsync();
             return hero;
