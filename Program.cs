@@ -1,6 +1,7 @@
 global using SuperHeroAPI.Data;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using SuperHeroAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,5 +29,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseLogResponseMiddleware();
 
 app.Run();
