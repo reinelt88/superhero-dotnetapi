@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SuperHeroAPI.Entity;
+using SuperHeroAPI.Filters;
 
 namespace SuperHeroAPI.Controllers
 {
@@ -31,6 +33,8 @@ namespace SuperHeroAPI.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 10)]
+        [ServiceFilter(typeof(ActionFilter))]
         public async Task<ActionResult<List<SuperHero>>> Get()
         {
             _logger.LogInformation("Get all heroes");
@@ -99,6 +103,7 @@ namespace SuperHeroAPI.Controllers
 
         // Delete a single hero by id
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<SuperHero>> Delete([FromRoute] int id)
         {
             var hero = await _context.SuperHeroes.FindAsync(id);
