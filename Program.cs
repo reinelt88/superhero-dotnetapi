@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using SuperHeroAPI.Filters;
 using SuperHeroAPI.Middlewares;
+using SuperHeroAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddResponseCaching();
 builder.Services.AddTransient<ActionFilter>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.AddHostedService<WriteInFile>();
 
 var app = builder.Build();
 

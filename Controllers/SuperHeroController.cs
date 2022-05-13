@@ -34,7 +34,6 @@ namespace SuperHeroAPI.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 10)]
-        [ServiceFilter(typeof(ActionFilter))]
         public async Task<ActionResult<List<SuperHero>>> Get()
         {
             _logger.LogInformation("Get all heroes");

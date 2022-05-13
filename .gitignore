@@ -456,3 +456,4 @@ $RECYCLE.BIN/
 # configuration files
 appsettings.json
 appsettings.Development.json
+wwwroot/log.txt
