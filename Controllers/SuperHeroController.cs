@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SuperHeroAPI.DTO;
 using SuperHeroAPI.Entity;
 using SuperHeroAPI.Filters;
 
@@ -25,11 +27,13 @@ namespace SuperHeroAPI.Controllers
 
         private readonly DataContext _context;
         private readonly ILogger<SuperHeroController> _logger;
+        private readonly IMapper _mapper;
 
-        public SuperHeroController(DataContext context, ILogger<SuperHeroController> logger)
+        public SuperHeroController(DataContext context, ILogger<SuperHeroController> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -42,21 +46,23 @@ namespace SuperHeroAPI.Controllers
 
         // Add a super hero 
         [HttpPost]
-        public async Task<ActionResult<SuperHero>> Post([FromBody] SuperHero hero)
+        public async Task<ActionResult<SuperHero>> Post([FromBody] SuperHeroCreateDTO superHeroCreateDto)
         {
-            var universe = await _context.Universes.FindAsync(hero.UniverseId);
+            var universe = await _context.Universes.FindAsync(superHeroCreateDto.UniverseId);
             if (universe == null)
             {
-                return NotFound($"Universe {hero.UniverseId} does not exist");
+                return NotFound($"Universe {superHeroCreateDto.UniverseId} does not exist");
             }
             
             //verify if exits a hero with the same name
-            var existingHero = await _context.SuperHeroes.FirstOrDefaultAsync(h => h.Name == hero.Name);
+            var existingHero = await _context.SuperHeroes.FirstOrDefaultAsync(h => h.Name == superHeroCreateDto.Name);
             if (existingHero != null)
             {
-                return BadRequest($"Hero {hero.Name} already exists");
+                return BadRequest($"Hero {superHeroCreateDto.Name} already exists");
             }
 
+            var hero = _mapper.Map<SuperHero>(superHeroCreateDto);
+            
             _context.SuperHeroes.Add(hero);
             await _context.SaveChangesAsync();
             return hero;
@@ -64,14 +70,15 @@ namespace SuperHeroAPI.Controllers
 
         // Get a single hero by id
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<SuperHero>> Get([FromRoute] int id)
+        public async Task<ActionResult<SuperHeroShowDTO>> Get([FromRoute] int id)
         {
             var hero = await _context.SuperHeroes.Include(h => h.Universe).FirstOrDefaultAsync(h => h.Id == id);
             if (hero == null)
             {
                 return NotFound();
             }
-            return await Task.FromResult(hero);
+            var superHeroDto = _mapper.Map<SuperHeroShowDTO>(hero);
+            return await Task.FromResult(superHeroDto);
         }
 
         // Update a hero

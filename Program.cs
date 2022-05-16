@@ -21,6 +21,7 @@ builder.Services.AddResponseCaching();
 builder.Services.AddTransient<ActionFilter>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 builder.Services.AddHostedService<WriteInFile>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
