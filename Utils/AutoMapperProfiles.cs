@@ -12,6 +12,8 @@ public class AutoMapperProfiles
         {
             CreateMap<SuperHeroCreateDTO, SuperHero>();
             CreateMap<SuperHero, SuperHeroShowDTO>();
+            CreateMap<UniverseCreateDTO, Universe>();
+            CreateMap<Universe, UniverseShowDTO>();
         }
     }
 }

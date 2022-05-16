@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SuperHeroAPI.DTO;
 using SuperHeroAPI.Entity;
 
 namespace SuperHeroAPI.Controllers
@@ -9,35 +11,39 @@ namespace SuperHeroAPI.Controllers
     public class UniverseController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public UniverseController(DataContext context)
+        public UniverseController(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         //get all universes
         [HttpGet]
-        public async Task<ActionResult<List<Universe>>> Get()
+        public async Task<ActionResult<List<UniverseShowDTO>>> Get()
         {
-            return await _context.Universes.Include(u => u.SuperHeroes).ToListAsync();
+            var universes = await _context.Universes.Include(universe => universe.SuperHeroes).ToListAsync();
+            return _mapper.Map<List<UniverseShowDTO>>(universes);
         }
 
         //get a single universe by id
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Universe>> Get([FromRoute] int id)
+        public async Task<ActionResult<UniverseShowDTO>> Get([FromRoute] int id)
         {
-            var universe = await _context.Universes.FindAsync(id);
+            var universe = await _context.Universes.Include(universe => universe.SuperHeroes).FirstOrDefaultAsync(universe => universe.Id == id);
             if (universe == null)
             {
                 return NotFound();
             }
-            return await Task.FromResult(universe);
+            return await Task.FromResult(_mapper.Map<UniverseShowDTO>(universe));
         }
 
         //add a universe
         [HttpPost]
-        public async Task<ActionResult<Universe>> Post(Universe universe)
+        public async Task<ActionResult<Universe>> Post(UniverseCreateDTO universeCreateDto)
         {
+            var universe = _mapper.Map<Universe>(universeCreateDto);
             _context.Universes.Add(universe);
             await _context.SaveChangesAsync();
             return universe;
@@ -58,7 +64,7 @@ namespace SuperHeroAPI.Controllers
 
         //delete a universe
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Universe>> Delete([FromRoute] int id)
+        public async Task<ActionResult<UniverseShowDTO>> Delete([FromRoute] int id)
         {
             var universe = await _context.Universes.FindAsync(id);
             if (universe == null)
@@ -67,14 +73,15 @@ namespace SuperHeroAPI.Controllers
             }
             _context.Universes.Remove(universe);
             await _context.SaveChangesAsync();
-            return universe;
+            return _mapper.Map<UniverseShowDTO>(universe);
         }
         
         //get all universes by name
         [HttpGet("name/{name}")]
-        public async Task<ActionResult<List<Universe>>> GetByName([FromRoute] string name)
+        public async Task<ActionResult<List<UniverseShowDTO>>> GetByName([FromRoute] string name)
         {
-            return await _context.Universes.Where(u => u.Name.Contains(name)).ToListAsync();
+            var universes = await _context.Universes.Where(u => u.Name.Contains(name)).ToListAsync();
+            return _mapper.Map<List<UniverseShowDTO>>(universes);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SuperHeroAPI.Entity
         [StringLength(maximumLength:30, MinimumLength = 3, ErrorMessage = "{0} must be between {2} and {1} characters")]
         [FirstLetterUpper]
         public string Place { get; set; }
-        public int UniverseId { get; set; }
+        public int UniverseId { get; set; } = 1;
         public Universe Universe { get; set; }
     }
 }
