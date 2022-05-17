@@ -24,5 +24,6 @@ namespace SuperHeroAPI.Entity
         public string Place { get; set; }
         public int UniverseId { get; set; } = 1;
         public Universe Universe { get; set; }
+        public List<SuperHeroesMovies> SuperHeroesMovies { get; set; }
     }
 }

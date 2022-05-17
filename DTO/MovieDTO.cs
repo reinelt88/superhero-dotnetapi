@@ -1,8 +1,8 @@
 namespace SuperHeroAPI.DTO;
 
-public class UniverseShowDTO
+public class MovieDTO
 {
     public string Id { get; set; }
     public string Name { get; set; }
-    public List<SuperHeroShowDTO> SuperHeroes { get; set; }
+    public string Year { get; set; }
 }

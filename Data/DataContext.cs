@@ -16,10 +16,20 @@ namespace SuperHeroAPI.Data
         {
             var connectionString = configuration.GetConnectionString("WebApiDatabase");
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-        }            
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //create many to many relationship between SuperHero and Movie
+            modelBuilder.Entity<SuperHeroesMovies>()
+                .HasKey(sc => new { sc.SuperHeroId, sc.MovieId });
+        }
 
         public DbSet<SuperHero> SuperHeroes { get; set; }
         public DbSet<Universe> Universes { get; set; }
+        public DbSet<Movie> Movie { get; set; }
+        public DbSet<SuperHeroesMovies> SuperHeroesMovies { get; set; }
         
     }
 }

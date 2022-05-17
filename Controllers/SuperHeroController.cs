@@ -38,16 +38,16 @@ namespace SuperHeroAPI.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 10)]
-        public async Task<ActionResult<List<SuperHeroShowDTO>>> Get()
+        public async Task<ActionResult<List<SuperHeroDTO>>> Get()
         {
             _logger.LogInformation("Get all heroes");
             var superHeroes = await _context.SuperHeroes.Include(superhero => superhero.Universe).ToListAsync();
-            return _mapper.Map<List<SuperHeroShowDTO>>(superHeroes);
+            return _mapper.Map<List<SuperHeroDTO>>(superHeroes);
         }
 
         // Add a super hero 
         [HttpPost]
-        public async Task<ActionResult<SuperHeroShowDTO>> Post([FromBody] SuperHeroCreateDTO superHeroCreateDto)
+        public async Task<ActionResult<SuperHeroDTO>> Post([FromBody] SuperHeroCreateDTO superHeroCreateDto)
         {
             var universe = await _context.Universes.FindAsync(superHeroCreateDto.UniverseId);
             if (universe == null)
@@ -68,19 +68,19 @@ namespace SuperHeroAPI.Controllers
             
             await _context.SaveChangesAsync();
             
-            return _mapper.Map<SuperHeroShowDTO>(hero);
+            return _mapper.Map<SuperHeroDTO>(hero);
         }
 
         // Get a single hero by id
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<SuperHeroShowDTO>> Get([FromRoute] int id)
+        public async Task<ActionResult<SuperHeroDTO>> Get([FromRoute] int id)
         {
             var hero = await _context.SuperHeroes.Include(superhero => superhero.Universe).FirstOrDefaultAsync(superhero => superhero.Id == id);
             if (hero == null)
             {
                 return NotFound();
             }
-            var superHeroDto = _mapper.Map<SuperHeroShowDTO>(hero);
+            var superHeroDto = _mapper.Map<SuperHeroDTO>(hero);
             return await Task.FromResult(superHeroDto);
         }
 
@@ -113,7 +113,7 @@ namespace SuperHeroAPI.Controllers
         // Delete a single hero by id
         [HttpDelete("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<SuperHeroShowDTO>> Delete([FromRoute] int id)
+        public async Task<ActionResult<SuperHeroDTO>> Delete([FromRoute] int id)
         {
             var hero = await _context.SuperHeroes.FindAsync(id);
             if (hero == null)
@@ -122,12 +122,12 @@ namespace SuperHeroAPI.Controllers
             }
             _context.SuperHeroes.Remove(hero);
             await _context.SaveChangesAsync();
-            return _mapper.Map<SuperHeroShowDTO>(hero);
+            return _mapper.Map<SuperHeroDTO>(hero);
         }
         
         // Get all heroes from a universe
         [HttpGet("universe/{id:int}")]
-        public async Task<ActionResult<List<SuperHeroShowDTO>>> GetByUniverse([FromRoute] int id)
+        public async Task<ActionResult<List<SuperHeroDTO>>> GetByUniverse([FromRoute] int id)
         {
             var heroes = await _context.SuperHeroes.Where(h => h.UniverseId == id).Include(superhero => superhero.Universe).ToListAsync();
             // return not found if heroes is empty
@@ -135,7 +135,7 @@ namespace SuperHeroAPI.Controllers
             {
                 return NotFound();
             }
-            return await Task.FromResult(_mapper.Map<List<SuperHeroShowDTO>>(heroes));
+            return await Task.FromResult(_mapper.Map<List<SuperHeroDTO>>(heroes));
         }
     }
 }
